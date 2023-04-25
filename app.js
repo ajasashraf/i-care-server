@@ -25,7 +25,7 @@ app.use(logger("dev"));
 connection();
 app.use(
   cors({
-    origin: ["http://localhost:4000"],
+    origin: ["https://icaretech.netlify.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
     allowedHeaders: ["Content-type", "Access", "Authorization"],
@@ -43,7 +43,7 @@ const server = app.listen(2000, () => {
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4000",
+    origin: "https://icaretech.netlify.app",
     credentials: true,
   },
 });
