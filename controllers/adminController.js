@@ -362,8 +362,20 @@ export const getDashboardDetails = (req, res) => {
 
 export const getSales = (req, res) => {
   try {
+    let startDate = req.query.startDate ?? null;
+    let endDate = req.query.endDate ?? null;
+    let query = {};
+
+    if (startDate && endDate) {
+      query.createdAt = { $gte: startDate, $lte: endDate };
+    } else if (startDate) {
+      query.createdAt = { $gte: startDate };
+    } else if (endDate) {
+      query.createdAt = { $lte: endDate };
+    }
+
     appointmentModel
-      .find()
+      .find(query)
       .populate("patientId", "fullName email _id")
       .populate("doctorId", "fullName ")
       .sort({ createdAt: 1 })

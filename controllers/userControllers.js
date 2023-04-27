@@ -106,7 +106,7 @@ export const signIn = (req, res) => {
 };
 
 export const userCheck = (req, res) => {
-  let token = req.headers.authorization;
+  let token = req.headers?.authorization;
   try {
     if (token) {
       jwt.verify(token, process.env.TOKEN_SECRET, (err, result) => {
@@ -188,7 +188,14 @@ export const resetPass = (req, res) => {
     if (otp === otpVerify) {
       bcrypt.hash(password, 10).then((hash) => {
         userModel
-          .findOneAndUpdate({ email: email }, { $set: { password: hash } })
+          .findOneAndUpdate(
+            { email: email },
+            {
+              $set: {
+                password: hash,
+              },
+            }
+          )
           .then((result) => {
             res.status(200).json({ reset: true });
           });
@@ -224,18 +231,23 @@ export const saveGoogleUser = (req, res) => {
         let newUser = new userModel({
           fullName: details.displayName,
           email: details.email,
-          phone: details.phoneNumber  ,
+          phone: details.phoneNumber ?? "",
           profilePic: details.photoUrl,
         });
         newUser.save().then((newUser) => {
-          const token = generateToken({
+          let wallet = new walletModel({
             userId: newUser._id,
-            name: newUser.fullName,
-            type: "user",
           });
-          response.logIn = true;
-          response.token = token;
-          res.status(200).json(response);
+          wallet.save().then(() => {
+            const token = generateToken({
+              userId: newUser._id,
+              name: newUser.fullName,
+              type: "user",
+            });
+            response.logIn = true;
+            response.token = token;
+            res.status(200).json(response);
+          });
         });
       }
     });
@@ -247,7 +259,7 @@ export const saveGoogleUser = (req, res) => {
 export const getDepartment = async (req, res) => {
   try {
     let pageNo = req.query.pageNo;
-    let searchQuery = req.query.search  ;
+    let searchQuery = req.query.search ?? null;
     let query = {
       list: true,
     };
@@ -255,11 +267,11 @@ export const getDepartment = async (req, res) => {
       (query.name = { $regex: new RegExp(`${searchQuery}.*`, "i") });
 
     let count = await departmentModel.countDocuments(query);
+
     departmentModel
       .find(query)
       .limit(pageNo * 4)
       .then((departments) => {
-        console.log(count);
         res.status(200).json({ departments, count });
       });
   } catch (err) {
@@ -288,13 +300,13 @@ export const getDoctors = (req, res) => {
       filter === "price-lt-1000" &&
       (query.priceOffline = { $lte: 1000 });
     filter && filter === "price-lt-700" && (query.priceOffline = { $lte: 700 });
-    search && (query.fullName = { $regex: new RegExp(`${search}.*`, "i") });
-    let pageSkip = (pageNo - 1) * 4;
+    search && (query.fullName = { $regex: new RegExp(`^${search}.*`, "i") });
+    let pageSkip = (pageNo - 1) * 8;
     doctorModel.countDocuments(query).then((count) => {
       doctorModel
         .find(query, { password: 0 })
         .skip(pageSkip)
-        .limit(4)
+        .limit(8)
         .populate("department")
         .sort(sortBy)
         .then((doctors) => {
@@ -431,6 +443,7 @@ export const editProfile = (req, res) => {
         : res.status(500);
     });
   } catch (err) {
+    console.log(err);
     res.status(500);
   }
 };
@@ -438,18 +451,24 @@ export const editProfile = (req, res) => {
 export const editProfilePic = (req, res) => {
   try {
     const image = req.body.imageData;
-    cloudinary.uploader.upload(image).then((imageData) => {
-      userModel
-        .updateOne(
-          { _id: req.userLogged },
-          { $set: { profilePic: imageData.secure_url } }
-        )
-        .then((result) => {
-          result.acknowledged
-            ? res.status(200).json({ result: true })
-            : res.status(500);
-        });
-    });
+    cloudinary.uploader
+      .upload(image, { upload_preset: "Ecare" })
+      .then((imageData) => {
+        userModel
+          .updateOne(
+            { _id: req.userLogged },
+            {
+              $set: {
+                profilePic: imageData.secure_url,
+              },
+            }
+          )
+          .then((result) => {
+            result.acknowledged
+              ? res.status(200).json({ result: true })
+              : res.status(500);
+          });
+      });
   } catch (err) {
     res.status(500);
   }
@@ -494,6 +513,7 @@ export const getWallet = (req, res) => {
     res.status(500);
   }
 };
+
 export const payWithWallet = (req, res) => {
   try {
     const appointmentId = req.query.appointmentId;
@@ -554,9 +574,7 @@ export const cancelAppointment = (req, res) => {
         amount: appointment.price,
         transactionType: "credit",
       });
-      console.log("hellll",appointment.price )
       transaction.save().then((transaction) => {
-  
         walletModel
           .updateOne(
             { userId: req.userLogged },
@@ -567,12 +585,9 @@ export const cancelAppointment = (req, res) => {
               $push: {
                 transactions: transaction._id,
               },
-            },
-            {upsert:true}
-           
+            }
           )
           .then(() => {
-            
             appointmentModel
               .updateOne(
                 { _id: appointmentId },
@@ -588,7 +603,6 @@ export const cancelAppointment = (req, res) => {
                   : res.status(200);
               });
           });
-         
       });
     });
   } catch (err) {
