@@ -40,7 +40,7 @@ router.get("/getUserDetails", userAuthentication, getUserDetails);
 router.post("/bookAppoinment", userAuthentication, bookAppoinment);
 router.get("/initializePayment", userAuthentication, initializePayment);
 router.post("/verifyPayment", userAuthentication, verifyPayment);
-router.post("/editProfile", userAuthentication, editProfile);
+router.put("/editProfile", userAuthentication, editProfile);
 router.post("/editProfilePic", userAuthentication, editProfilePic);
 router.get("/getAppointments", userAuthentication, getAppointmentsUser);
 router.get("/getAppointmentHistory", userAuthentication, getAppointmentHistory);
