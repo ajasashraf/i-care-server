@@ -37,7 +37,7 @@ router.get("/departments", adminAuthentication, getDepartments);
 router.get("/unListDepartment/:id", adminAuthentication, unlistDepartment);
 router.get("/listDepartment/:id", adminAuthentication, listDepartment);
 router.get("/authenticate", adminAuthentication, adminCheck);
-router.post("/editDepartment/:id", adminAuthentication, editDepartment);
+router.put("/editDepartment/:id", adminAuthentication, editDepartment);
 router.get("/getDashboardDetails", adminAuthentication, getDashboardDetails);
 router.get("/getSales", adminAuthentication, getSales);
 
