@@ -68,7 +68,7 @@ export const getAllUsers = async (req, res, next) => {
 export const getMessages = async (req, res, next) => {
   try {
     const { from, to } = req.body;
-    console.log(req.body,"usergettt");
+    console.log(req.body, "usergettt");
     const messages = await Messages.find({
       users: {
         $all: [from, to],
@@ -89,7 +89,7 @@ export const getMessages = async (req, res, next) => {
 export const addMessage = async (req, res, next) => {
   try {
     const { from, to, message } = req.body;
-    console.log(req.body,"useraddddd");
+    console.log(req.body, "useraddddd");
     const data = await Messages.create({
       message: { text: message },
       users: [from, to],
@@ -106,7 +106,7 @@ export const addMessage = async (req, res, next) => {
 export const getMessagesDoctor = async (req, res, next) => {
   try {
     const { from, to } = req.body;
-    console.log(req.body,"docotrgettt");
+    console.log(req.body, "docotrgettt");
     const messages = await Messages.find({
       users: {
         $all: [from, to],
@@ -125,14 +125,11 @@ export const getMessagesDoctor = async (req, res, next) => {
 };
 
 export const addMessageDoctor = async (req, res, next) => {
-
-
-  
   try {
     const { from, to, message } = req.body;
 
-    console.log(from,to,message ,'hasaaaaaaaaaaaai');
-    console.log(req.body,"docotradddd");
+    console.log(from, to, message, "hasaaaaaaaaaaaai");
+    console.log(req.body, "docotradddd");
     const data = await Messages.create({
       message: { text: message },
       users: [from, to],
