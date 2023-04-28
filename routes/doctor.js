@@ -32,7 +32,7 @@ router.get("/rejectedUser/:id", rejectedUser);
 router.get("/resendForm/:id", resendApplication);
 router.get("/getDepartments", getDepartment);
 router.get("/getDocDetails", doctorAuthentication, getDocDetails);
-router.post("/editProfile", doctorAuthentication, editProfile);
+router.put("/editProfile", doctorAuthentication, editProfile);
 router.post("/editTime", doctorAuthentication, timeSlots);
 router.post("/deleteSlot", doctorAuthentication, deleteSlot);
 router.post("/editProfilePic", doctorAuthentication, editProfilePic);
