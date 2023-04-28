@@ -24,8 +24,8 @@ const router = express.Router();
 
 router.post("/logIn", adminLogin);
 router.get("/getUsers", adminAuthentication, getUsers);
-router.patch("/blockUser/:id", adminAuthentication, blockUser);
-router.patch("/unBlockUser/:id", adminAuthentication, unBlockUser);
+router.post("/blockUser/:id", adminAuthentication, blockUser);
+router.get("/unBlockUser/:id", adminAuthentication, unBlockUser);
 router.get("/getDoctorList", adminAuthentication, getDoctor);
 router.get("/blockDoctor/:id", adminAuthentication, blockDoctor);
 router.get("/unBlockDoctor/:id", adminAuthentication, unBlockDoctor);
