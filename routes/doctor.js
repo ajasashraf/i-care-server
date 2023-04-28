@@ -34,7 +34,7 @@ router.get("/getDepartments", getDepartment);
 router.get("/getDocDetails", doctorAuthentication, getDocDetails);
 router.put("/editProfile", doctorAuthentication, editProfile);
 router.post("/editTime", doctorAuthentication, timeSlots);
-router.post("/deleteSlot", doctorAuthentication, deleteSlot);
+router.delete("/deleteSlot", doctorAuthentication, deleteSlot);
 router.post("/editProfilePic", doctorAuthentication, editProfilePic);
 router.get("/getAppointments", doctorAuthentication, getAppointmentsDoctor);
 router.get("/visitedAppointment", doctorAuthentication, appointmentVisited);
