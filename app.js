@@ -25,7 +25,7 @@ app.use(logger("dev"));
 connection();
 app.use(
   cors({
-    origin: ["https://icaretech.netlify.app"],
+    origin: ["https://icaretech.netliy.app"],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
     allowedHeaders: ["Content-type", "Access", "Authorization"],
